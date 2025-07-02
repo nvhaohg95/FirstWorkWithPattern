@@ -1,0 +1,3 @@
+﻿-- Update mirgate khi tạo bảng mới chạy bằng terminal
+
+dotnet ef migrations add AddCategoryTable -p Infrastructure/Infrastructure.csproj -s API/FirstWorkWithPattern/FirstWorkWithPattern.csproj

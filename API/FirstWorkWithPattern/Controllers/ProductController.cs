@@ -1,6 +1,5 @@
-﻿using Application.Interfaces.Repositories;
-using Application.Services;
-using Domain;
+﻿using Application.Services;
+using Domain.Models;
 using FirstWorkWithPattern.Base;
 using Microsoft.AspNetCore.Mvc;
 

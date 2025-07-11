@@ -1,15 +1,13 @@
-﻿using Application.Interfaces.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Application.Interfaces;
+using Application.Interfaces.Interfaces;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Infrastructure.Persistence.Repositories
 {
     public class UnitOfWork : IUnitOfWork
     {
         private readonly ApplicationDbContext _context;
+        private IDbContextTransaction _transaction;
         private readonly Dictionary<Type, object> _repositories = new();
 
         public UnitOfWork(ApplicationDbContext context)
@@ -17,13 +15,12 @@ namespace Infrastructure.Persistence.Repositories
             _context = context;
         }
 
-        //Khai báo repository cho các entity
-        public IRepositoryBase<T> Repository<T>() where T : class
+        public IRepositoryBase<T> GetRepository<T>() where T : class
         {
             var type = typeof(T);
             if (!_repositories.ContainsKey(type))
             {
-                var repoInstance = new RepositoryBase<T>(_context);
+                var repoInstance = new EFRepository<T>(_context);
                 _repositories[type] = repoInstance;
             }
             return (IRepositoryBase<T>)_repositories[type];
@@ -31,6 +28,26 @@ namespace Infrastructure.Persistence.Repositories
 
         public async Task<int> SaveChangesAsync() => await _context.SaveChangesAsync();
 
-        public void Dispose() => _context.Dispose();
+        public async Task BeginTransactionAsync()
+        {
+            _transaction = await _context.Database.BeginTransactionAsync();
+        }
+
+        public async Task CommitAsync()
+        {
+            await _context.SaveChangesAsync();
+            await _transaction.CommitAsync();
+        }
+
+        public async Task RollbackAsync()
+        {
+            await _transaction.RollbackAsync();
+        }
+
+        public void Dispose()
+        {
+            _context.Dispose();
+            _transaction?.Dispose();
+        }
     }
-}
+} 

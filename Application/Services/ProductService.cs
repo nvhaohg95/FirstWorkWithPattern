@@ -1,24 +1,41 @@
 ﻿
-using Application.Interfaces.Repositories;
-using Application.Services.Base;
-using Domain;
+using Application.Base;
+using Application.Interfaces;
+using Application.Interfaces.Interfaces;
+using Domain.Models;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
 namespace Application.Services
 {
     public class ProductService : ServiceBase
     {
-        public ProductService(IUnitOfWork unitOfWork) : base(unitOfWork) { }
+        public ProductService(IUnitOfWork unitOfWork)
+        {
+            _unitOfWork = unitOfWork;
+        }
 
         public async Task<Product> Add(Product product)
         {
-            await Repository<Product>().AddAsync(product);
-            await SaveChangesAsync();
-            return product;
+            await _unitOfWork.BeginTransactionAsync();
+            try
+            {
+                await _unitOfWork.GetRepository<Product>().AddAsync(product);
+                await _unitOfWork.CommitAsync();
+                return product;
+            }
+            catch (Exception ex)
+            {
+                await _unitOfWork.RollbackAsync();
+                throw;
+            }
         }
 
-        public List<Product> Get(string name)
+        public async Task<List<Product>> Get(string name)
         {
-            var lstData = Repository<Product>().Queryable().Where(x => x.Name.Contains(name)).ToList();
-
+            var all = await _unitOfWork.GetRepository<Product>().GetAllAsync();
+            var lstData = all.Where(x => x.Name.Contains(name)).ToList();
             return lstData;
         }
     }

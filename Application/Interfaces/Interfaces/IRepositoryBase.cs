@@ -5,17 +5,16 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Interfaces.Repositories
+namespace Application.Interfaces
 {
     public interface IRepositoryBase<T> where T : class
     {
         Task<T> GetByIdAsync(Guid id);
         Task<IEnumerable<T>> GetAllAsync();
-        Task<IEnumerable<T>> GetQueryAsync(Expression<Func<T,bool>> predicate);
-        Task<T> GetOneAsync(Expression<Func<T,bool>> predicate);
+        Task<IEnumerable<T>> GetAsync(Func<T, bool> predicate);
+        Task<T> GetOneAsync(Func<T, bool> predicate);
         Task AddAsync(T entity);
-        void Update(T entity);
-        void Delete(T entity);
-        IQueryable<T> Queryable();
+        Task UpdateAsync(T entity);
+        Task DeleteAsync(Guid id);
     }
 }

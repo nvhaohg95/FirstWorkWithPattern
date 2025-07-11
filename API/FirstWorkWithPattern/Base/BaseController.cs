@@ -1,5 +1,4 @@
-﻿using Application.Interfaces.Repositories;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace FirstWorkWithPattern.Base
 {

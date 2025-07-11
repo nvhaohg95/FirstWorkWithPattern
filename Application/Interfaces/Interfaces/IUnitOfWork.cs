@@ -4,11 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Interfaces.Repositories
+namespace Application.Interfaces.Interfaces
 {
     public interface IUnitOfWork : IDisposable
     {
-        IRepositoryBase<T> Repository<T>() where T : class;
+        IRepositoryBase<T> GetRepository<T>() where T : class;
         Task<int> SaveChangesAsync();
+        Task BeginTransactionAsync();
+        Task CommitAsync();
+        Task RollbackAsync();
     }
 }

@@ -1,17 +1,16 @@
-﻿using Application.Interfaces;
+using Application.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Infrastructure.Persistence.Repositories
 {
-    public class RepositoryBase<T> : IRepositoryBase<T> where T : class
+    public class EFRepository<T> : IRepositoryBase<T> where T : class
     {
         protected readonly ApplicationDbContext _context;
-        public RepositoryBase(ApplicationDbContext context)
+        public EFRepository(ApplicationDbContext context)
         {
             _context = context;
         }
@@ -47,4 +46,4 @@ namespace Infrastructure.Persistence.Repositories
             }
         }
     }
-}
+} 

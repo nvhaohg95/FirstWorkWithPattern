@@ -1,4 +1,4 @@
-﻿using Domain;
+﻿using Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure
@@ -16,8 +16,7 @@ namespace Infrastructure
             {
                 entity.ToTable("Products");
                 entity.HasKey(p => p.Id);
-                entity.Property(e => e.Id)
-                .ValueGeneratedOnAdd(); // Tự động sinh Guid khi thêm mới
+                entity.Property(e => e.Id);// Tự động sinh Guid khi thêm mới
                 entity.Property(p => p.Name).IsRequired().HasMaxLength(100);
                 entity.Property(c => c.CreatedOn)
                 .HasDefaultValueSql("GETUTCDATE()");
@@ -27,8 +26,7 @@ namespace Infrastructure
             {
                 entity.ToTable("Users");
                 entity.HasKey(p => p.Id);
-                entity.Property(e => e.Id)
-                .ValueGeneratedOnAdd(); // Tự động sinh Guid khi thêm mới
+                entity.Property(e => e.Id);// Tự động sinh Guid khi thêm mới
                 entity.Property(p => p.Name).IsRequired().HasMaxLength(100);
                 entity.Property(c => c.CreatedOn)
                 .HasDefaultValueSql("GETUTCDATE()");

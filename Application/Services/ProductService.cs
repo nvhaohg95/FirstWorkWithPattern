@@ -1,7 +1,7 @@
 ﻿
 using Application.Base;
 using Application.Interfaces;
-using Application.Interfaces.Interfaces;
+using Application.Interfaces;
 using Domain.Models;
 using System.Collections.Generic;
 using System.Linq;

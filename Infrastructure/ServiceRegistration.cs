@@ -5,15 +5,16 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Data;
-using Application.Interfaces.Interfaces;
-using MongoDB.Driver;
 using Application.Interfaces;
+using MongoDB.Driver;
+using Infrastructure.Persistence.Authentication;
+using Infrastructure.Persistence.Log;
 
 namespace Infrastructure
 {
     public static class ServiceRegistration
     {
-        public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddServices(this IServiceCollection services, IConfiguration configuration)
         {
             // Đăng ký DbContext cho EF
             services.AddDbContext<ApplicationDbContext>(options =>
@@ -33,6 +34,12 @@ namespace Infrastructure
 
             // Đăng ký ProductService
             services.AddScoped<ProductService>();
+
+            // Đăng ký IJwtService
+            services.AddScoped<IJwtService, JwtService>();
+
+            // Đăng ký ILogService cho từng loại controller
+            services.AddScoped(typeof(ILogService<>), typeof(Logs<>));
 
             // Đăng ký IMongoClient và IMongoDatabase
             services.AddSingleton<IMongoClient>(sp =>

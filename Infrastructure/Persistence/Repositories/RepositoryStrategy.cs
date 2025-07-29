@@ -1,5 +1,4 @@
 using Application.Interfaces;
-using Application.Interfaces.Interfaces;
 using Microsoft.Extensions.Configuration;
 using System;
 

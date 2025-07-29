@@ -1,6 +1,6 @@
 using System;
 
-namespace Application.Interfaces.Interfaces
+namespace Application.Interfaces
 {
     public interface IRepositoryStrategy<T> where T : class
     {

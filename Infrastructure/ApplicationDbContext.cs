@@ -8,18 +8,17 @@ namespace Infrastructure
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options) { }
 
-        public DbSet<Product> Products { get; set; }
+        public DbSet<Products> Products { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Product>(entity =>
+            modelBuilder.Entity<Products>(entity =>
             {
                 entity.ToTable("Products");
                 entity.HasKey(p => p.Id);
                 entity.Property(e => e.Id);// Tự động sinh Guid khi thêm mới
                 entity.Property(p => p.Name).IsRequired().HasMaxLength(100);
-                entity.Property(c => c.CreatedOn)
-                .HasDefaultValueSql("GETUTCDATE()");
+                entity.Property(c => c.CreatedOn);
             });
 
             modelBuilder.Entity<User>(entity =>
@@ -28,8 +27,7 @@ namespace Infrastructure
                 entity.HasKey(p => p.Id);
                 entity.Property(e => e.Id);// Tự động sinh Guid khi thêm mới
                 entity.Property(p => p.Name).IsRequired().HasMaxLength(100);
-                entity.Property(c => c.CreatedOn)
-                .HasDefaultValueSql("GETUTCDATE()");
+                entity.Property(c => c.CreatedOn);
             });
         }
     }

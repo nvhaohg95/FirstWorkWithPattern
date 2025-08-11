@@ -31,19 +31,22 @@ builder.Services.AddAuthentication("Bearer")
             ValidAudience = jwtConfig["Audience"],
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(jwtConfig["Secret"]))
+            //IssuerSigningKey = new SymmetricSecurityKey(
+            //    Encoding.UTF8.GetBytes(jwtConfig["Secret"]))
         };
     });
 
 builder.Services.AddAuthorization();
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope())
+if (builder.Configuration["Provider"] == "EF")
 {
-    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    // Tạo database và bảng nếu chưa có, tự động
-    dbContext.Database.Migrate();
+    using (var scope = app.Services.CreateScope())
+    {
+        var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        // Tạo database và bảng nếu chưa có, tự động
+        dbContext.Database.Migrate();
+    }
 }
 
 if (app.Environment.IsDevelopment())

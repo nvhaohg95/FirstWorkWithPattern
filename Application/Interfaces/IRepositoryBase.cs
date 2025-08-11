@@ -15,6 +15,7 @@ namespace Application.Interfaces
         Task<T> GetOneAsync(Func<T, bool> predicate);
         Task AddAsync(T entity);
         Task UpdateAsync(T entity);
+        Task<int> ExecuteUpdateAsync<TUpdate>(Expression<Func<T, bool>> predicate,TUpdate updateModel) where TUpdate : class;
         Task DeleteAsync(Guid id);
     }
 }

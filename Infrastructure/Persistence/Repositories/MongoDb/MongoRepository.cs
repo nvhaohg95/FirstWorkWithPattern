@@ -1,7 +1,8 @@
 using Application.Interfaces;
 using MongoDB.Driver;
+using System.Linq.Expressions;
 
-namespace Infrastructure.Persistence.Repositories
+namespace Infrastructure.Persistence.Repositories.Mongo
 {
     public class MongoRepository<T> : IRepositoryBase<T> where T : class
     {
@@ -53,5 +54,10 @@ namespace Infrastructure.Persistence.Repositories
             var filter = Builders<T>.Filter.Eq("Id", id);
             await _collection.DeleteOneAsync(filter);
         }
+
+        public Task<int> ExecuteUpdateAsync<TUpdate>(Expression<Func<T, bool>> predicate, TUpdate updateModel) where TUpdate : class
+        {
+            throw new NotImplementedException();
+        }
     }
-} 
+}

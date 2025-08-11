@@ -17,11 +17,22 @@ namespace FirstWorkWithPattern.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(Product product)
+        [Route("create")]
+        public async Task<IActionResult> Create(Products product)
         {
+            product.Id = Guid.NewGuid();
             _log.Info(JsonConvert.SerializeObject(product));
             var response = await _productService.Add(product);
             return Ok(product);
+        }
+
+
+        [HttpPost]
+        [Route("update/{id}")]
+        public async Task<IActionResult> Update(Guid id)
+        {
+            var response = await _productService.Update(id);
+            return Ok(response);
         }
 
         [HttpGet]
@@ -30,5 +41,7 @@ namespace FirstWorkWithPattern.Controllers
             var response = _productService.Get(search);
             return Ok(response);
         }
+
+
     }
 }

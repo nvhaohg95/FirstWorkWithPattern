@@ -36,7 +36,7 @@ namespace Infrastructure.Persistence.Authentication
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
-                issuer: _issuer,
+                //issuer: _issuer,
                 audience: _audience,
                 claims: claims,
                 expires: DateTime.UtcNow.AddHours(1),

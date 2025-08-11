@@ -1,17 +1,20 @@
-using Application.Interfaces;
+﻿using Application.Interfaces;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace Infrastructure.Persistence.Repositories
+namespace Infrastructure.Persistence.UnitOfWorks.EF
 {
-    public class UnitOfWork : IUnitOfWork
+    public class EfUnitOfWork : IUnitOfWork
     {
         private readonly ApplicationDbContext _context;
         private IDbContextTransaction _transaction;
         private readonly Dictionary<Type, object> _repositories = new();
+        private readonly IServiceProvider _serviceProvider;
 
-        public UnitOfWork(ApplicationDbContext context)
+        public EfUnitOfWork(ApplicationDbContext context, IServiceProvider serviceProvider)
         {
             _context = context;
+            _serviceProvider = serviceProvider;
         }
 
         public IRepositoryBase<T> GetRepository<T>() where T : class
@@ -19,9 +22,10 @@ namespace Infrastructure.Persistence.Repositories
             var type = typeof(T);
             if (!_repositories.ContainsKey(type))
             {
-                var repoInstance = new EFRepository<T>(_context);
-                _repositories[type] = repoInstance;
+                var strategy = _serviceProvider.GetRequiredService<IRepositoryStrategy<T>>();
+                _repositories[type] = strategy.GetRepository();
             }
+
             return (IRepositoryBase<T>)_repositories[type];
         }
 
@@ -45,8 +49,8 @@ namespace Infrastructure.Persistence.Repositories
 
         public void Dispose()
         {
-            _context.Dispose();
             _transaction?.Dispose();
+            _context.Dispose();
         }
     }
-} 
+}

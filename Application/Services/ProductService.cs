@@ -1,27 +1,23 @@
 ﻿
 using Application.Base;
 using Application.Interfaces;
-using Application.Interfaces;
 using Domain.Models;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Application.Services
 {
     public class ProductService : ServiceBase
     {
-        public ProductService(IUnitOfWork unitOfWork)
+        public ProductService(IUnitOfWorkStrategy strategy)
         {
-            _unitOfWork = unitOfWork;
+            _unitOfWork = strategy.GetUnitOfWork();
         }
 
-        public async Task<Product> Add(Product product)
+        public async Task<Products> Add(Products product)
         {
             await _unitOfWork.BeginTransactionAsync();
             try
             {
-                await _unitOfWork.GetRepository<Product>().AddAsync(product);
+                await _unitOfWork.GetRepository<Products>().AddAsync(product);
                 await _unitOfWork.CommitAsync();
                 return product;
             }
@@ -32,9 +28,17 @@ namespace Application.Services
             }
         }
 
-        public async Task<List<Product>> Get(string name)
+        public async Task<int>Update(Guid id)
         {
-            var all = await _unitOfWork.GetRepository<Product>().GetAllAsync();
+            return await _unitOfWork.GetRepository<Products>().ExecuteUpdateAsync(x=>x.Id == id, new
+            {
+                Name = "Updated Name",
+            });
+        }
+
+        public async Task<List<Products>> Get(string name)
+        {
+            var all = await _unitOfWork.GetRepository<Products>().GetAllAsync();
             var lstData = all.Where(x => x.Name.Contains(name)).ToList();
             return lstData;
         }

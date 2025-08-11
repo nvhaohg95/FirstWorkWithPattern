@@ -1,10 +1,10 @@
-﻿using Application.Interfaces;
+﻿using Application.Base;
+using Application.Interfaces;
 using Application.Services;
 using Domain.Models;
+using Domain.Models.temps;
 using FirstWorkWithPattern.Base;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-
 namespace FirstWorkWithPattern.Controllers
 {
     [ApiController, Route("api/[controller]")]
@@ -18,10 +18,10 @@ namespace FirstWorkWithPattern.Controllers
 
         [HttpPost]
         [Route("create")]
-        public async Task<IActionResult> Create(Products product)
+        public async Task<IActionResult> Create(ProductDTO model)
         {
+            var product = MapperHelper.MapTo<Products>(model);
             product.Id = Guid.NewGuid();
-            _log.Info(JsonConvert.SerializeObject(product));
             var response = await _productService.Add(product);
             return Ok(product);
         }
